@@ -6,24 +6,29 @@
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 
-#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define SERVICE_UUID "be75746c-50d6-4339-9d7d-000c69fccfb6"
+#define CHARACTERISTIC_UUID "acd38a80-7f10-47d9-966d-bf45bfaa55b0"
+
+BLEService *pService;
+BLECharacteristic *pCharacteristic;
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println("Starting BLE work!");
 
-  BLEDevice::init("Long name works now");
+  BLEDevice::init("Help devaisu");
   BLEServer *pServer = BLEDevice::createServer();
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+  pService = pServer->createService(SERVICE_UUID);
+
+  pCharacteristic = pService->createCharacteristic(
       CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ |
           BLECharacteristic::PROPERTY_WRITE);
 
   pCharacteristic->setValue("Hello World says Neil");
   pService->start();
+
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
@@ -36,6 +41,6 @@ void setup()
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  delay(2000);
+  Serial.printf("%s\n", pCharacteristic->getValue().c_str());
+  delay(1000);
 }
